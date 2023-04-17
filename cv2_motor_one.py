@@ -1,5 +1,15 @@
 import numpy as np
 import cv2
+from pyfirmata import Arduino, SERVO, util
+from time import sleep
+
+port = 'COM5'
+pin = 10 # 180
+pin2 = 11 # 360
+pin3 = 12 # 360
+board = Arduino(port)
+
+board.digital[pin].mode = SERVO
 
 # imgpath = 'C:\\Users\\eli\\PycharmProjects\\kukli_na_konci\\'
 imgpath = 'D:\\Desktop\\uch 10g\\VMKS\\OpenCV-Tutorials-main\\assets\\'
@@ -31,12 +41,17 @@ class img_object():
         
         
 one_img = img_object('one_pic4.jpg')
-two_img = img_object('two_pic2.jpg')
-three_img = img_object('three_pic2.jpg')
 
 
 method = cv2.TM_CCOEFF_NORMED
     
+    
+def rotateservo(pin, angle):
+    board.digital[pin].write(angle)
+    sleep(0.015)
+
+coords = [0]
+coords.append(90)
     
 while True:
     
@@ -54,31 +69,21 @@ while True:
     screen = width, height # 640, 480
 
     one_img.check()
-    two_img.check()
-    three_img.check()
 
     
     if (one_img.max_val >= 0.6):
         cv2.rectangle(frame, one_img.location, one_img.bottom_right, 255, 5)
         print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print ("coords: ", ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3, "!!!!!")
+        print ("coords: ", ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3, "!!!!!") # TODo make it check the difference between the last two coords - if its too big - make it smaller
         
-        coords = ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3
-    
-    if (two_img.max_val >= 0.6):
-        cv2.rectangle(frame, two_img.location, two_img.bottom_right, 128, 5)
-        print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print ("coords: ", ((two_img.location[1] + two_img.bottom_right[1]) / 2) / 3, "!!!!!")
+        # if (coords[0] < 20 or coords > 140):
+        #     continue
+        # else:   
+        #     if (((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3):
+                
+        #     coords[0] += ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3
         
-        coords = ((two_img.location[1] + two_img.bottom_right[1]) / 2) / 3
-        
-    if (three_img.max_val >= 0.6):
-        cv2.rectangle(frame, three_img.location, three_img.bottom_right, 0, 5)
-        print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print ("coords: ", ((three_img.location[1] + three_img.bottom_right[1]) / 2) / 3, "!!!!!")
-        
-        coords = ((three_img.location[1] + three_img.bottom_right[1]) / 2) / 3
-
+        rotateservo(pin, coords)
         
         
     cv2.imshow('frame', frame)

@@ -4,50 +4,63 @@ from pyfirmata import Arduino, SERVO, util
 from time import sleep
 
 port = 'COM5'
-pin = 10 # 360
-pin2 = 11 # 180
+pin = 10 # 180
+pin2 = 11 # 360
+pin3 = 12 # 360
 board = Arduino(port)
 
 board.digital[pin].mode = SERVO
 board.digital[pin2].mode = SERVO
+board.digital[pin3].mode = SERVO
 
 # imgpath = 'C:\\Users\\eli\\PycharmProjects\\kukli_na_konci\\'
 imgpath = 'D:\\Desktop\\uch 10g\\VMKS\\OpenCV-Tutorials-main\\assets\\'
 
 cap = cv2.VideoCapture(0)
 
-one_img = cv2.imread(imgpath + 'one_pic4.jpg', 1)
-one_img = cv2.cvtColor(one_img, cv2.COLOR_BGR2GRAY)
-
-two_img = cv2.imread(imgpath + 'two_pic2.jpg', 1)
-two_img = cv2.cvtColor(two_img, cv2.COLOR_BGR2GRAY)
-
-three_img = cv2.imread(imgpath + 'three_pic2.jpg', 1)
-three_img = cv2.cvtColor(three_img, cv2.COLOR_BGR2GRAY)
-
-# one_img = cv2.resize(cap, (200, 200))
-h, w = one_img.shape
-h2, w2 = two_img.shape
-h3, w3 = three_img.shape
-
-imgs_list = [one_img, two_img, three_img]
-
 # print(h, w)
 
+class img_object():
+    def __init__(self, img_file) -> None:
+        
+        self.img_file = img_file
+        
+        self.img = cv2.imread(imgpath + self.img_file, 1)
+        self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+        
+        self.h, self.w = self.img.shape
+
+        
+    def check(self):
+        
+        self.result = cv2.matchTemplate(gray, self.img, method)
+        self.min_val, self.max_val, self.min_loc, self.max_loc = cv2.minMaxLoc(self.result)
+        
+        self.location = self.max_loc
+        
+        self.bottom_right = (self.location[0] + self.w, self.location[1] + self.h)
+           
+        
+        
+one_img = img_object('one_pic4.jpg')
+two_img = img_object('two_pic2.jpg')
+three_img = img_object('three_pic2.jpg')
+
+
 method = cv2.TM_CCOEFF_NORMED
-
-
-
+    
+    
 def rotateservo(pin, angle):
     board.digital[pin].write(angle)
     sleep(0.015)
 
-rotateservo(pin, 90)
-    
+rotateservo(pin2, 90)
+rotateservo(pin3, 90)
     
 while True:
     
-    rotateservo(pin, 90)
+    rotateservo(pin2, 90)
+    rotateservo(pin3, 90)
     
     ret, frame = cap.read()
     # print(ret)
@@ -61,53 +74,44 @@ while True:
 
     height, width, channel = frame.shape
     screen = width, height # 640, 480
-    # print ("screen: ", screen)
 
+    one_img.check()
+    two_img.check()
+    three_img.check()
 
-    result = cv2.matchTemplate(gray, one_img, method)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
     
-    # result2 = cv2.matchTemplate(gray, two_img, method)
-    # min_val2, max_val2, min_loc2, max_loc2 = cv2.minMaxLoc(result)
-
-    location = max_loc
-    
-    # location2 = max_loc2
-
-    # h, w = img.shape
-
-    bottom_right = (location[0] + w, location[1] + h)
-    
-    # bottom_right2 = (location2[0] + w2, location2[1] + h2)
-    
-    # print ("location: ",location)
-    # print ("bottom right: ", bottom_right)
-    
-    if (max_val >= 0.6):
-        cv2.rectangle(frame, location, bottom_right, 255, 5)
+    if (one_img.max_val >= 0.6):
+        cv2.rectangle(frame, one_img.location, one_img.bottom_right, 255, 5)
         print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print ("location: ",location)
-        print ("bottom right: ", bottom_right)
-        print ("=======s")
-        print ("coords: ", ((location[1] + bottom_right[1]) / 2) / 3, "!!!!!q")
-        coords_y = ((location[1] + bottom_right[1]) / 2) / 3
+        print ("coords: ", ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3, "!!!!!")
         
-        coords_x = ((location[0] + bottom_right[0]) / 2) / 4
+        coords = ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3
         
-        rotateservo(pin, coords_y)
-        rotateservo(pin2, coords_x)
-        
-    # if (max_val2 >= 0.6):
-    #     cv2.rectangle(frame, location2, bottom_right2, 255, 5)
-    #     print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    #     print ("location: ",location)
-    #     print ("bottom right: ", bottom_right)
-    #     print ("=======s")
-    #     print ("coords: ", ((location[1] + bottom_right[1]) / 2) / 3, "!!!!!")
-    #     coords = ((location[1] + bottom_right[1]) / 2) / 3
-    #     rotateservo(pin, coords)
+        rotateservo(pin, coords)
     
+    if (two_img.max_val >= 0.6):
+        cv2.rectangle(frame, two_img.location, two_img.bottom_right, 128, 5)
+        print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print ("coords: ", ((two_img.location[1] + two_img.bottom_right[1]) / 2) / 3, "!!!!!")
+        
+        coords = ((two_img.location[1] + two_img.bottom_right[1]) / 2) / 3
+        
+        if ((two_img.location[1] + two_img.bottom_right[1]) / 2 >= 240):
+            rotateservo(pin2, 100)
+        else:
+            rotateservo(pin2, 80)
+        
+    if (three_img.max_val >= 0.6):
+        cv2.rectangle(frame, three_img.location, three_img.bottom_right, 0, 5)
+        print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print ("coords: ", ((three_img.location[1] + three_img.bottom_right[1]) / 2) / 3, "!!!!!")
+        
+        coords = ((three_img.location[1] + three_img.bottom_right[1]) / 2) / 3
 
+        if ((two_img.location[1] + two_img.bottom_right[1]) / 2 >= 240):
+            rotateservo(pin3, 100)
+        else:
+            rotateservo(pin3, 80)
         
         
     cv2.imshow('frame', frame)
