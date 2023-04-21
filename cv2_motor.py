@@ -4,7 +4,7 @@ from pyfirmata import Arduino, SERVO, util
 from time import sleep
 
 port = 'COM5'
-pin = 10 # 180
+pin = 10 # 360
 pin2 = 11 # 360
 pin3 = 12 # 360
 board = Arduino(port)
@@ -54,11 +54,13 @@ def rotateservo(pin, angle):
     board.digital[pin].write(angle)
     sleep(0.015)
 
+rotateservo(pin, 90)
 rotateservo(pin2, 90)
 rotateservo(pin3, 90)
     
 while True:
     
+    rotateservo(pin, 90)
     rotateservo(pin2, 90)
     rotateservo(pin3, 90)
     
@@ -83,7 +85,7 @@ while True:
     if (one_img.max_val >= 0.6):
         cv2.rectangle(frame, one_img.location, one_img.bottom_right, 255, 5)
         print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print ("coords: ", ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3, "!!!!!")
+        print ("coords 1: ", ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3, "!!!!!")
         
         coords = ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3
         
@@ -92,26 +94,27 @@ while True:
     if (two_img.max_val >= 0.6):
         cv2.rectangle(frame, two_img.location, two_img.bottom_right, 128, 5)
         print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print ("coords: ", ((two_img.location[1] + two_img.bottom_right[1]) / 2) / 3, "!!!!!")
+        print ("coords 2 : ", ((two_img.location[1] + two_img.bottom_right[1]) / 2), "!!!!!")
         
-        coords = ((two_img.location[1] + two_img.bottom_right[1]) / 2) / 3
+        coords = ((two_img.location[1] + two_img.bottom_right[1]) / 2)
         
         if ((two_img.location[1] + two_img.bottom_right[1]) / 2 >= 240):
-            rotateservo(pin2, 100)
+            rotateservo(pin2, 110)
         else:
-            rotateservo(pin2, 80)
+            rotateservo(pin2, 70)
         
     if (three_img.max_val >= 0.6):
         cv2.rectangle(frame, three_img.location, three_img.bottom_right, 0, 5)
         print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print ("coords: ", ((three_img.location[1] + three_img.bottom_right[1]) / 2) / 3, "!!!!!")
+        print ("coords 3: ", ((three_img.location[1] + three_img.bottom_right[1]) / 2), "!!!!!")
         
-        coords = ((three_img.location[1] + three_img.bottom_right[1]) / 2) / 3
+        coords = ((three_img.location[1] + three_img.bottom_right[1]) / 2)
 
-        if ((two_img.location[1] + two_img.bottom_right[1]) / 2 >= 240):
+        if ((three_img.location[1] + three_img.bottom_right[1]) / 2 >= 240):
+            print("eho 95")
             rotateservo(pin3, 100)
         else:
-            rotateservo(pin3, 80)
+            rotateservo(pin3, 85)
         
         
     cv2.imshow('frame', frame)
