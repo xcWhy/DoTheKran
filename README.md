@@ -12,7 +12,7 @@
   - OpenCV
   - Pyfirmata
   
-*Може да изтеглите кода от repository-то катo zip файл :) *
+*Може да изтеглите кода от repository-то катo zip файл :)*
 
 # Готвача
 
