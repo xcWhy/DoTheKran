@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 # imgpath = 'C:\\Users\\eli\\PycharmProjects\\kukli_na_konci\\'
-imgpath = 'D:\\Desktop\\uch 10g\\VMKS\\OpenCV-Tutorials-main\\assets\\'
+imgpath = 'assets\\'
 
 cap = cv2.VideoCapture(0)
 

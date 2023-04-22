@@ -81,7 +81,7 @@ while True:
         # else:   
         #     if (((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3):
                 
-        #     coords[0] += ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3
+        coords = ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3
         
         rotateservo(pin, coords)
         

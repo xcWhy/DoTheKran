@@ -14,7 +14,8 @@ board.digital[pin2].mode = SERVO
 board.digital[pin3].mode = SERVO
 
 # imgpath = 'C:\\Users\\eli\\PycharmProjects\\kukli_na_konci\\'
-imgpath = 'D:\\Desktop\\uch 10g\\VMKS\\OpenCV-Tutorials-main\\assets\\'
+# imgpath = 'D:\\Desktop\\uch 10g\\VMKS\\OpenCV-Tutorials-main\\assets\\'
+imgpath = 'assets\\'
 
 cap = cv2.VideoCapture(0)
 
@@ -83,13 +84,17 @@ while True:
 
     
     if (one_img.max_val >= 0.6):
-        cv2.rectangle(frame, one_img.location, one_img.bottom_right, 255, 5)
+        cv2.rectangle(frame, one_img.location, one_img.bottom_right, 0, 5)
         print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print ("coords 1: ", ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3, "!!!!!")
+        print ("coords 3: ", ((one_img.location[1] + one_img.bottom_right[1]) / 2), "!!!!!")
         
-        coords = ((one_img.location[1] + one_img.bottom_right[1]) / 2) / 3
-        
-        rotateservo(pin, coords)
+        coords = ((one_img.location[1] + one_img.bottom_right[1]) / 2)
+
+        if ((one_img.location[1] + one_img.bottom_right[1]) / 2 >= 240):
+            print("eho 95")
+            rotateservo(pin, 100)
+        else:
+            rotateservo(pin, 85)
     
     if (two_img.max_val >= 0.6):
         cv2.rectangle(frame, two_img.location, two_img.bottom_right, 128, 5)
