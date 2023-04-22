@@ -34,4 +34,8 @@
 
 # Снимки на проекта 
 
+![viber_image_2023-04-22_08-45-14](https://user-images.githubusercontent.com/78636566/233765456-d8217dec-1afd-4b0c-a489-53eaa6898742.jpg)
+![viber_image_2023-04-22_08-45-142](https://user-images.githubusercontent.com/78636566/233765457-3e4f1a82-e979-42cb-82eb-c27fa4403551.jpg)
+![viber_image_2023-04-22_08-45-143](https://user-images.githubusercontent.com/78636566/233765458-c7d45627-8175-4e23-81ec-430cb11c1955.jpg)
+
 
